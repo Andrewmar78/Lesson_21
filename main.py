@@ -9,6 +9,7 @@ storages_capacity = 100
 shops = ["магазин 1", "магазин 2"]
 shops_capacity = 20
 
+
 # items = {
 #     storages[0]: {
 #         "печеньки": 10, "конфетки": 10, "ватрушки": 10, "пастилки": 10, "ириски": 10},
@@ -25,13 +26,14 @@ def main():
     #
     # order = f"Доставить {amount} {item} из {transfer_from} в {transfer_to}"
     # print(order)
-    # store = Store()
-    # shop = Shop()
-    # request = Request(order)
+    store = Store()
+    shop = Shop()
 
     store_items = {
         "печеньки": 10, "конфетки": 8, "зефирки": 6, "пастилки": 4, "ириски": 2
     }
+
+    store.items = store_items
 
     while True:
         item = input("Введите товар для перемещения\n")
@@ -43,14 +45,11 @@ def main():
 
         order = f"Доставить {amount} {item} из {transfer_from} в {transfer_to}"
         print(order)
-        store = Store()
-        shop = Shop()
+
         request = Request(order)
 
         if item == "stop":
             break
-
-        store.items = store_items
 
         if request.from_ in storages:
             transfer_from = store
@@ -58,9 +57,6 @@ def main():
         elif request.from_ in shops:
             transfer_from = shop
             transfer_to = store
-        # else:
-        #     transfer_from = None
-        #     transfer_to = None
 
         transfer = []
 
@@ -87,20 +83,11 @@ def main():
             transfer.append(False)
             continue
 
-        # print("?" * 20)
-        # print(request.to_)
-        # print(transfer_to)
-        # print(transfer_to.get_unique_items_count)
-        # print(request.product)
-        # print(transfer_to.items)
-        # print("?" * 20)
-
         if request.to_ in shops and (transfer_to.get_unique_items_count != 0 or request.product in transfer_to.items):
             print("В магазине хватает уникальных товаров")
         else:
             print("В магазине не хватает уникальных товаров")
 
-        # print(transfer)
         if False not in transfer:
             transfer_from.remove(request.product, request.amount)
             print("-" * 20)
@@ -112,12 +99,12 @@ def main():
             print(f"В {request.from_} осталось:")
             for product, qnt in transfer_from.items.items():
                 print(f"{product}: {qnt}")
-            print(f"Свободного места осталось {store.get_free_space}")
+            print(f"Свободного места осталось {transfer_from.get_free_space}")
             print("-" * 20)
             print(f"В {request.to_} теперь:")
             for product, qnt in transfer_to.items.items():
                 print(f"{product}: {qnt}")
-            print(f"Свободного места осталось {shop.get_free_space}")
+            print(f"Свободного места осталось {transfer_to.get_free_space}")
         else:
             print("Что-то пошло не так")
         # break
